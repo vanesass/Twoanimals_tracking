@@ -9,6 +9,8 @@ import tkinter as tk
 from tkinter import ttk
 from scipy.signal import savgol_filter
 import pandas as pd
+import os
+import h5py
 
 def fill_missing(Y, kind="linear"):
     """Fills missing values independently along each dimension after the first."""
@@ -91,16 +93,19 @@ def smooth_diff(node_loc, win=25, poly=3):
     return node_vel
 
 def corr_roll(datax, datay, win): #FIXME
-    """
-    datax, datay are the two timeseries to find correlations between
-
-    win sets the number of frames over which the covariance is computed
-
-    """
-
     s1 = pd.Series(datax)
     s2 = pd.Series(datay)
 
     return np.array(s2.rolling(win).corr(s1))
 
+def reading_h5files(file,filepath):
+    if file.endswith(".h5"):
+        filename = os.path.join(filepath, file)
+        with h5py.File(filename, "r") as f:
+            dset_names = list(f.keys())
+            locations = f["tracks"][:].T
+            node_names = [n.decode() for n in f["node_names"][:]]
+            video_name = file[-22:-12]
 
+            return filename, dset_names, locations, node_names, video_name
+    return None

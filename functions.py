@@ -99,13 +99,11 @@ def corr_roll(datax, datay, win): #FIXME
     return np.array(s2.rolling(win).corr(s1))
 
 def reading_h5files(file,filepath):
-    if file.endswith(".h5"):
-        filename = os.path.join(filepath, file)
-        with h5py.File(filename, "r") as f:
-            dset_names = list(f.keys())
-            locations = f["tracks"][:].T
-            node_names = [n.decode() for n in f["node_names"][:]]
-            video_name = file[-22:-12]
+    filename = os.path.join(filepath, file)
+    with h5py.File(filename, "r") as f:
+        dset_names = list(f.keys())
+        locations = f["tracks"][:].T
+        node_names = [n.decode() for n in f["node_names"][:]]
+        video_name = file[-22:-12]
 
-            return filename, dset_names, locations, node_names, video_name
-    return None
+        return filename, dset_names, locations, node_names, video_name

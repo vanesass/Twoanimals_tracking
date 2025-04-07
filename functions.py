@@ -107,3 +107,10 @@ def reading_h5files(file,filepath):
         video_name = file[-22:-12]
 
         return filename, dset_names, locations, node_names, video_name
+
+def nameoftracks (df_metadata, video_name, tracklabel, Nrats):
+    for track in range(Nrats):
+        rowtrack = df_metadata.loc[(df_metadata["Video"] == video_name) & (df_metadata["Track"] == track)]
+        if not rowtrack.empty:
+            tracklabel[track] = rowtrack["Group"].values[0] + "-" + str(rowtrack["ID"].values[0])  # Store concatenated string
+    return tracklabel, rowtrack

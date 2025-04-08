@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def plot_tracks(video_name, label_loc, selected_label, tracklabel, plot_path):
+def plot_tracks(video_name, label_loc, selected_label, track_tags, plot_path):
     """
     Plots tracking data for two tracks (0 and 1)
 
@@ -22,8 +22,8 @@ def plot_tracks(video_name, label_loc, selected_label, tracklabel, plot_path):
 
     # First plot - time series of locations
     plt.figure()
-    plt.plot(label_loc[:, 0, 0], 'purple', label= tracklabel[0])
-    plt.plot(label_loc[:, 0, 1], 'g', label= tracklabel[1])
+    plt.plot(label_loc[:, 0, 0], 'purple', label= track_tags[0])
+    plt.plot(label_loc[:, 0, 1], 'g', label= track_tags[1])
     plt.plot(-1 * label_loc[:, 1, 0], 'purple')
     plt.plot(-1 * label_loc[:, 1, 1], 'g')
     plt.legend(loc="center right")
@@ -35,8 +35,8 @@ def plot_tracks(video_name, label_loc, selected_label, tracklabel, plot_path):
 
     # Second plot - 2D tracks
     plt.figure(figsize=(8, 8))
-    plt.plot(label_loc[:, 0, 0], label_loc[:, 1, 0], 'purple', label=tracklabel[0])
-    plt.plot(label_loc[:, 0, 1], label_loc[:, 1, 1], 'g', label=tracklabel[1])
+    plt.plot(label_loc[:, 0, 0], label_loc[:, 1, 0], 'purple', label=track_tags[0])
+    plt.plot(label_loc[:, 0, 1], label_loc[:, 1, 1], 'g', label=track_tags[1])
     plt.legend()
     # Formatting for second plot
     plt.xlim(0, 960) #size of video
@@ -50,7 +50,7 @@ def plot_tracks(video_name, label_loc, selected_label, tracklabel, plot_path):
     # Display all figures
     plt.show()
 
-def plot_velocity(label_loc,label_vel_track, video_name, selected_label,tracklabel, track, plot_path):
+def plot_velocity(label_loc,label_vel_track, video_name, selected_label,track_tag, track, plot_path):
     #First plot of velocity
     fig = plt.figure(figsize=(15, 7))
     ax1 = fig.add_subplot(211)
@@ -58,16 +58,16 @@ def plot_velocity(label_loc,label_vel_track, video_name, selected_label,tracklab
     ax1.plot(-1 * label_loc[:, 1, track], 'k', label='y')
     ax1.legend()
     ax1.set_xticks([])
-    ax1.set_title( f'{video_name, selected_label,tracklabel}')
+    ax1.set_title( f'{video_name, selected_label,track_tag}')
 
     ax2 = fig.add_subplot(212, sharex=ax1)
     im = ax2.imshow(label_vel_track[:, np.newaxis].T, aspect='auto', vmin=0, vmax=10, cmap='cool')
     ax2.set_yticks([])
-    ax2.set_title( f'{video_name, selected_label,tracklabel} - Velocity')
+    ax2.set_title( f'{video_name, selected_label,track_tag} - Velocity')
     # Add colorbar for velocity
     cbar = fig.colorbar(im, ax=ax2, orientation='vertical')
     cbar.set_label('Velocity (units)')  # Replace with your actual units
-    plot3 = plot_path + tracklabel + 'velocityvstime.png'  # save figure
+    plot3 = plot_path + track_tag + 'velocityvstime.png'  # save figure
     plt.savefig(plot3)  # save figure
 
     # Second plot of velocity
@@ -78,7 +78,7 @@ def plot_velocity(label_loc,label_vel_track, video_name, selected_label,tracklab
     ax1.set_xticks([])
     ax1.set_ylim(0, 720)
     ax1.set_yticks([])
-    ax1.set_title(f'{video_name, selected_label,tracklabel}')
+    ax1.set_title(f'{video_name, selected_label,track_tag}')
 
     kp = label_vel_track
     vmin = 0
@@ -90,12 +90,12 @@ def plot_velocity(label_loc,label_vel_track, video_name, selected_label,tracklab
     ax2.set_xticks([])
     ax2.set_ylim(0, 720) #size of video
     ax2.set_yticks([])
-    ax2.set_title(f"{video_name}, {selected_label}, {tracklabel}\n"  # First line
+    ax2.set_title(f"{video_name}, {selected_label}, {track_tag}\n"  # First line
                 "Coloured by speed magnitude")  # Second line)
     # Add colorbar for velocity
     cbar = fig.colorbar(im, ax=ax2, orientation='vertical')
     cbar.set_label('Velocity')  # Replace with your actual units
-    plot4 = plot_path + tracklabel + 'velocityontrajectory.png'  # save figure
+    plot4 = plot_path + track_tag + 'velocityontrajectory.png'  # save figure
     plt.savefig(plot4)  # save figure
 
     plt.show()#display all figures

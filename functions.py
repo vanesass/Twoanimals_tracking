@@ -104,11 +104,20 @@ def reading_h5files(file,filepath):
         dset_names = list(f.keys())
         locations = f["tracks"][:].T
         node_names = [n.decode() for n in f["node_names"][:]]
-        video_name = file[-22:-12]
+        video_name = file[file.index("rat"):file.index("rat") + 10]  #video_name = file[-22:-12]
+        track_tags = f["track_names"][:]
+        track_tags = [name.decode("utf-8") for name in track_tags]
 
-        return filename, dset_names, locations, node_names, video_name
+        return filename, dset_names, locations, node_names, video_name, track_tags
 
-def nameoftracks (df_metadata, video_name, tracklabel, Nrats):
+def rowmatch (df_metadata, video_name, track_tag):
+    for track in track_tag:
+        rowtrack = df_metadata.loc[(df_metadata["Video"] == video_name) & (df_metadata["Track"] == track)]
+    return rowtrack
+
+
+def nameoftracks (df_metadata, video_name, Nrats):
+    tracklabel = [""] * Nrats  # tracklabel contains the name equivalent IDsubject of the tracks
     for track in range(Nrats):
         rowtrack = df_metadata.loc[(df_metadata["Video"] == video_name) & (df_metadata["Track"] == track)]
         if not rowtrack.empty:

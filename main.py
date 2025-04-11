@@ -13,8 +13,8 @@ from visualizations import plot_tracks, plot_velocity
 
 
 #1. UPLOAD DATA #for now I am using one file then it will be a loop
-filepath = '/mnt/datafast/vanesa/SLEAP_projects/analysis/'
-filemetadata = '/mnt/datafast/vanesa/SLEAP_projects/analysis/metadata_demo.xlsx'
+filepath = '/mnt/datafast/vanesa/SLEAP_projects/analysis/e1/'
+filemetadata = '/mnt/datafast/vanesa/SLEAP_projects/analysis/e1/metadata_e1.xlsx'
 df_metadata = pd.read_excel(filemetadata)#upload metadata as df
 resultsfolder = filepath + 'Results/' #path for results
 
@@ -24,9 +24,11 @@ for file in os.listdir(filepath):
     pass
   else:
    filename, dset_names, locations, node_names, video_name, track_tags = reading_h5files(file, filepath)
+   print(filename)
    fileresults = resultsfolder + video_name +'/'
    os.makedirs(fileresults, exist_ok=True) #videoresults
      #2.1. FILL MISSING VALUES
+   #TODO maybe I add a filter for score >0.9 (individual label score)
    locations = fill_missing(locations)  #interpolate when a label wasn't detected e.g. hidden by environment
 
      #2.1.A LABEL OF CHOICE ACROSS VIDEO FOR BOTH ANIMALS - CHOOSE ONLY AT THE BEGINNING
@@ -41,7 +43,7 @@ for file in os.listdir(filepath):
    label_vel_tracks = {} # Dictionary to store velocity for each track
    rowtrack = rowmatch(df_metadata, video_name, track_tags)  # function to name the tracks
    # Loop over the tracks (0 and 1)
-   for track in track_tags: #TODO adapt to new list without indexes
+   for track in track_tags:
      track_index = track_tags.index(track)
      label_vel_tracks[track] = smooth_diff(label_loc[:, :, track_index]) # Extract the velocity variable for the current track
      plot_velocity(label_loc, label_vel_tracks[track], video_name, selected_label, track, track_index, fileresults) # Plot using the first plot function
